@@ -47,15 +47,17 @@ async function callGemini(contents, responseMimeType = 'application/json') {
 // File path for reports database
 const reportsFile = path.resolve('reports.json');
 
-// Helper to read existing reports
+// Helper to read existing reports (auto-creates reports.json as [] if missing)
 function getReports() {
   if (!fs.existsSync(reportsFile)) {
+    fs.writeFileSync(reportsFile, '[]');
     return [];
   }
   try {
     const data = fs.readFileSync(reportsFile, 'utf-8');
     return JSON.parse(data || '[]');
   } catch (e) {
+    fs.writeFileSync(reportsFile, '[]');
     return [];
   }
 }

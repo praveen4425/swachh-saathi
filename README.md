@@ -6,7 +6,7 @@
 
 ## 📌 The Problem It Solves
 
-Waste segregation at source remains one of the largest civic challenges in Indian towns and cities. Citizens often struggle to determine whether common household items belong to wet, dry, sanitary, or hazardous waste categories under the updated **SWM Rules 2026**. Additionally, reporting illegal open garbage piles to municipal corporations is cumbersome. 
+Waste segregation at source remains one of the largest civic challenges in Indian towns and cities. Citizens often struggle to determine whether common household items belong to wet, dry, sanitary, or special care waste categories under the updated **SWM Rules 2026**. Additionally, reporting illegal open garbage piles to municipal corporations is cumbersome. 
 
 **Swachh Saathi** makes waste sorting effortless: click a photo, let Gemini AI instantly classify every item with clear disposal instructions in Hindi, or snap an open garbage dump to auto-generate a geotagged municipal complaint.
 
@@ -67,9 +67,10 @@ Waste segregation at source remains one of the largest civic challenges in India
 - A Google Gemini API key from [Google AI Studio](https://aistudio.google.com/)
 
 ### 2. Setup
-Clone or navigate to the project folder:
-```powershell
-cd D:\swachh-saathi
+Clone the repository and enter the directory:
+```bash
+git clone https://github.com/praveen4425/swachh-saathi.git
+cd swachh-saathi
 ```
 
 Install dependencies:
