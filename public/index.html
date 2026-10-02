@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swachh Saathi</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Swachh Saathi</h1>
+    <p>Photo kheencho, kachra sort karo</p>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-tabs">
+    <button id="tabSortBtn" class="tab-btn active">Sort Kachra</button>
+    <button id="tabDumpBtn" class="tab-btn">Dump Report</button>
+    <button id="tabListBtn" class="tab-btn">All Reports</button>
+  </nav>
+
+  <main class="container">
+    <!-- Tab 1: Sort Kachra (Original Feature) -->
+    <section id="sortSection" class="tab-content active">
+      <!-- How it works section -->
+      <div class="card-box guide-box">
+        <h3>Kaise kaam karta hai?</h3>
+        <div class="steps-grid">
+          <div class="step-item">
+            <span class="step-num">1</span>
+            <p><strong>Photo kheencho</strong><br>Kachre ki saaf photo lo ya gallery se chuno.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">2</span>
+            <p><strong>AI sort karega</strong><br>Har item ko turant scan karke pehchanega.</p>
+          </div>
+          <div class="step-item">
+            <span class="step-num">3</span>
+            <p><strong>Sahi dabbe mein daalo</strong><br>Diye gaye disposal tip ke mutabik daalo.</p>
+          </div>
+        </div>
+        <p class="rules-note">
+          🇮🇳 <strong>SWM Rules 2026</strong> ke 4 streams: <span class="badge-tag badge-wet">Wet (Geela)</span>, <span class="badge-tag badge-dry">Dry (Sookha)</span>, <span class="badge-tag badge-sanitary">Sanitary</span>, aur <span class="badge-tag badge-special_care">Special Care</span>.
+        </p>
+      </div>
+
+      <div class="card-box">
+        <label for="imageInput" class="upload-btn">
+          Choose Photo / Camera
+        </label>
+        <input type="file" id="imageInput" accept="image/*" capture="environment">
+
+        <div id="previewContainer" class="preview-container hidden">
+          <img id="imagePreview" alt="Selected waste preview">
+        </div>
+
+        <!-- Sort Error Box -->
+        <div id="sortErrorBox" class="error-banner hidden">
+          <span id="sortErrorMsg"></span>
+          <button id="sortRetryBtn" class="small-retry-btn">Dobara try karo</button>
+        </div>
+
+        <button id="sortBtn" class="primary-btn hidden">
+          <span class="btn-spinner hidden"></span>
+          <span class="btn-text">Sort karo</span>
+        </button>
+      </div>
+
+      <div id="resultsSection" class="results-section">
+        <div id="cardsList" class="cards-list"></div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Dump Report Feature -->
+    <section id="dumpSection" class="tab-content hidden">
+      <div class="card-box">
+        <h2>Report Garbage Dump</h2>
+        <p class="section-desc">Kachre ke dher ki photo lekar municipal complaint taiyar karein.</p>
+
+        <label for="dumpImageInput" class="upload-btn">
+          Take Dump Photo / Camera
+        </label>
+        <input type="file" id="dumpImageInput" accept="image/*" capture="environment">
+
+        <div id="dumpPreviewContainer" class="preview-container hidden">
+          <img id="dumpImagePreview" alt="Dump preview">
+        </div>
+
+        <!-- Location display -->
+        <div class="location-box">
+          <span id="locationStatus">📍 Location: Detecting...</span>
+          <button type="button" id="refreshLocationBtn" class="small-btn">Detect Again</button>
+        </div>
+
+        <!-- Optional Note -->
+        <textarea id="dumpNote" rows="2" placeholder="Optional note / landmark (jaise: Bus stand ke paas)"></textarea>
+
+        <!-- Dump Error Box -->
+        <div id="dumpErrorBox" class="error-banner hidden">
+          <span id="dumpErrorMsg"></span>
+          <button id="dumpRetryBtn" class="small-retry-btn">Dobara try karo</button>
+        </div>
+
+        <button id="reportBtn" class="primary-btn">
+          <span class="btn-spinner hidden"></span>
+          <span class="btn-text">Report karo</span>
+        </button>
+      </div>
+
+      <!-- Result Card after reporting -->
+      <div id="reportResult" class="card-box hidden dump-result-box">
+        <h3>Report Status</h3>
+        <div id="notDumpMsg" class="alert-box alert-warning hidden">
+          Yeh jagah kachre ka open dump nahi lag rahi hai.
+        </div>
+        <div id="dumpSuccessContent" class="hidden">
+          <div class="result-header">
+            <span class="result-title">Severity:</span>
+            <span id="severityBadge" class="badge"></span>
+          </div>
+          <p id="dumpSummaryHi" class="summary-text"></p>
+          <div class="waste-types" id="dumpWasteTypes"></div>
+
+          <div class="complaint-box">
+            <div class="complaint-header">
+              <strong>Official Complaint:</strong>
+              <button id="copyComplaintBtn" class="small-btn">Copy</button>
+            </div>
+            <textarea id="complaintText" readonly rows="5"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: All Reports & Map -->
+    <section id="reportsListSection" class="tab-content hidden">
+      <div class="card-box">
+        <h2>Saved Dump Reports</h2>
+        <p class="section-desc">Map aur list jahan kachre ki shikayat darj hui hai.</p>
+
+        <!-- Leaflet Map Container -->
+        <div id="mapContainer" class="map-container"></div>
+      </div>
+
+      <div id="savedReportsList" class="cards-list"></div>
+    </section>
+  </main>
+
+  <!-- Leaflet JS for Map -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="script.js"></script>
+</body>
+</html>
